@@ -67,16 +67,26 @@ def encrypt(message: str, key: str):
     Uses the shift number for the key to encrypt by using the shift Dict\n
     Returns the crypted string\n
     """
-    global SHIFTDICT,LETTERDICT
+    global SHIFTDICT,LETTERDICT0
     shift_num = SHIFTDICT[key]
     cyphertext = ""
+    last_shift_letter = ""
     for i,letter in enumerate(message):
         try:
             letter_key = SHIFTDICT[letter]
-            crypt_num = shift_num + letter_key
+            if i == 0:
+                crypt_num = shift_num + letter_key
+            else:
+                #what happens if the first letter is a key, only case when last_letter would be ""
+                if last_shift_letter == "":
+                    crypt_num = letter_key
+                else:
+                    crypt_num = SHIFTDICT[last_shift_letter] + letter_key
+
             if crypt_num >= len(SHIFTDICT):
                 crypt_num -= len(SHIFTDICT)
-        
+
+            last_shift_letter = letter
             cyphertext += LETTERDICT[str(crypt_num)]
         except:
             cyphertext += letter
@@ -92,14 +102,22 @@ def decrypt(message: str, key: str):
     global SHIFTDICT, LETTERDICT
     shift_num = SHIFTDICT[key]
     plaintext = ""
+    last_shift_letter = ""
     for i,letter in enumerate(message):
         try:
             letter_key = SHIFTDICT[letter]
-            crypt_num = letter_key - shift_num
+            if i == 0:
+                crypt_num = letter_key - shift_num
+            else:
+                if last_shift_letter == "":
+                    crypt_num = letter_key
+                else:
+                    crypt_num = letter_key - SHIFTDICT[last_shift_letter]
 
             if crypt_num < 0:
                 crypt_num += len(SHIFTDICT)
             plaintext += LETTERDICT[str(crypt_num)]
+            last_shift_letter = LETTERDICT[str(crypt_num)]
         except:
             plaintext += letter
 

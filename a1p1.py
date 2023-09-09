@@ -4,7 +4,7 @@
 #
 # CMPUT 331 Student Submission License
 # Version 1.0
-# Copyright 2023 <<Insert your name here>>
+# Copyright 2023 <<Abhinav Parbhakar>>
 #
 # Redistribution is forbidden in all circumstances. Use of this software
 # without explicit authorization from the author is prohibited.
@@ -33,7 +33,7 @@
 """
 CMPUT 331 Assignment 1 Student Solution
 September 2023
-Author: <Your name here>
+Author: <Abhinav Parbhakar>
 """
 
 
@@ -46,13 +46,66 @@ LETTERS = ''.join([u+l for u, l in
 
 
 def get_map(letters=LETTERS):
-    raise NotImplementedError()
+    """
+    Takes in a string containing each letter to map to a number\n
+    Returns two dictionaries, one with letter-to-number mapping\n
+    The other with number-to-letter mapping\n
+    Runs in O(n), n = len(letters)\n
+    """
+    shift_map = {}
+    letter_map = {}
+
+    for i,letter in enumerate(letters):
+        shift_map[letter] = i
+        letter_map[str(i)] = letter
+
+    return shift_map,letter_map
 
 def encrypt(message: str, key: str):
-    raise NotImplementedError()
+    """
+    Encrypts by using the basis provided in casearCipher.py\n
+    Uses the shift number for the key to encrypt by using the shift Dict\n
+    Returns the crypted string\n
+    """
+    global SHIFTDICT,LETTERDICT
+    shift_num = SHIFTDICT[key]
+    cyphertext = ""
+    for i,letter in enumerate(message):
+        try:
+            letter_key = SHIFTDICT[letter]
+            crypt_num = shift_num + letter_key
+            if crypt_num >= len(SHIFTDICT):
+                crypt_num -= len(SHIFTDICT)
+        
+            cyphertext += LETTERDICT[str(crypt_num)]
+        except:
+            cyphertext += letter
+
+    return cyphertext
+        
+
 
 def decrypt(message: str, key: str):
-    raise NotImplementedError()
+    """
+    Inputs a crypted string and returns plain-text\n
+    """
+    global SHIFTDICT, LETTERDICT
+    shift_num = SHIFTDICT[key]
+    plaintext = ""
+    for i,letter in enumerate(message):
+        try:
+            letter_key = SHIFTDICT[letter]
+            crypt_num = letter_key - shift_num
+
+            if crypt_num < len(SHIFTDICT):
+                crypt_num += len(SHIFTDICT)
+            plaintext += LETTERDICT[str(crypt_num)]
+        except:
+            plaintext += letter
+
+    return plaintext
+
+
 
 def test():
     global SHIFTDICT, LETTERDICT 

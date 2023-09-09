@@ -97,7 +97,7 @@ def decrypt(message: str, key: str):
             letter_key = SHIFTDICT[letter]
             crypt_num = letter_key - shift_num
 
-            if crypt_num < len(SHIFTDICT):
+            if crypt_num < 0:
                 crypt_num += len(SHIFTDICT)
             plaintext += LETTERDICT[str(crypt_num)]
         except:
